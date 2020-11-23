@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 const BASE_URL = "http://185.125.56.240:8080/api/v1/";
-// const BASE_MEDIA_URL = 'http://185.125.56.240:8080/static/media/';
 
 class NetworkCall {
   static NetworkCall _instance = NetworkCall.internal();

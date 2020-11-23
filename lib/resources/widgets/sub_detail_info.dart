@@ -12,7 +12,6 @@ class RestaurantSubTitleInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log("$data");
     return Container(
       height: 35,
       decoration: BoxDecoration(

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:test_task_project/core/models/menus.dart';
 import 'package:test_task_project/core/models/restaurants.dart';
@@ -30,7 +28,6 @@ class HomeProvider extends ChangeNotifier {
   getRestaurants() {
     setLoadingState(true);
     _appAPI.getRestaurantsList().then((value) {
-      log("$value");
       this._restaurant = restaurantFromJson(value);
       this._lengthList = this._restaurant.closed.toList().length +
           this._restaurant.open.toList().length;
@@ -42,7 +39,6 @@ class HomeProvider extends ChangeNotifier {
   getDetailedRestaurantByTitle(String _title) {
     setLoadingState(true);
     _appAPI.getMenuByRestaurant(_title).then((value) {
-      log("menu list ---- $value");
       this._restaurantMenu = menuRestaurantFromJson(value);
       _restaurantMenu.categories.map((e) {
         _lengthDishes = e.dishes.length;

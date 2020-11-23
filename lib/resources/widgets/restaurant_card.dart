@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:test_task_project/core/models/restaurants.dart';
-import 'package:test_task_project/resources/components/sub_detail_info.dart';
+import 'package:test_task_project/resources/widgets/sub_detail_info.dart';
 import 'package:test_task_project/utils/common.dart';
 
 class RestaurantCard extends StatelessWidget {
@@ -57,7 +57,7 @@ class RestaurantCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    placeholder: (context, url) => SizedBox(
+                    placeholder: (context, url) => const SizedBox(
                       height: 25,
                       width: 25,
                       child: Center(
