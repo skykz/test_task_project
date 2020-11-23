@@ -6,6 +6,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:test_task_project/provider/home_provider.dart';
 import 'package:test_task_project/resources/components/menu_food_card.dart';
 
+import '../provider/home_provider.dart';
+import '../provider/home_provider.dart';
+import '../provider/home_provider.dart';
+
 class RestaurantMenuDetail extends StatefulWidget {
   final String title;
   const RestaurantMenuDetail({Key key, this.title}) : super(key: key);
@@ -58,29 +62,101 @@ class _RestaurantMenuDetailState extends State<RestaurantMenuDetail>
             ),
           );
         return Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            iconTheme: IconThemeData(
-              color: Colors.black,
-            ),
-            actions: [
-              IconButton(
-                  icon: const Icon(
-                    Icons.favorite_border_rounded,
-                    size: 30,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () {}),
-              IconButton(
-                  icon: const Icon(
-                    Icons.search_rounded,
-                    size: 30,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () {}),
+          appBar: buildAppBarFixed(),
+          body: CustomScrollView(
+            slivers: [
+              buildSliverToBoxAdapterHeader(provider),
+              buildSliverAppBarCollepse(provider),
+              buildSliverGridBody(provider, width, height)
             ],
           ),
-          body: Column(
+        );
+      }),
+    );
+  }
+
+  AppBar buildAppBarFixed() {
+    return AppBar(
+      elevation: 0,
+      iconTheme: IconThemeData(
+        color: Colors.black,
+      ),
+      actions: [
+        IconButton(
+            icon: const Icon(
+              Icons.favorite_border_rounded,
+              size: 30,
+              color: Colors.grey,
+            ),
+            onPressed: () {}),
+        IconButton(
+            icon: const Icon(
+              Icons.search_rounded,
+              size: 30,
+              color: Colors.grey,
+            ),
+            onPressed: () {}),
+      ],
+    );
+  }
+
+  SliverAppBar buildSliverAppBarCollepse(HomeProvider provider) {
+    return SliverAppBar(
+      pinned: true,
+      leading: null,
+      automaticallyImplyLeading: false,
+      backgroundColor: Colors.white,
+      elevation: 0,
+      leadingWidth: 0,
+      flexibleSpace: Center(
+        child: SizedBox(
+          height: 40,
+          child: TabBar(
+            indicator: BoxDecoration(
+              color: const Color.fromRGBO(231, 205, 141, 1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            dragStartBehavior: DragStartBehavior.start,
+            indicatorWeight: 0,
+            unselectedLabelStyle: TextStyle(
+              color: Colors.grey,
+            ),
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorColor: const Color.fromRGBO(122, 98, 39, 1),
+            labelColor: const Color.fromRGBO(122, 98, 39, 1),
+            unselectedLabelColor: Colors.grey,
+            isScrollable: true,
+            onTap: (val) => _scrollToIndex(val),
+            tabs: provider.getRestaurantMenu.categories.map((category) {
+              return SizedBox(
+                child: Tab(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Text(
+                      category.name.toString(),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+            controller: TabController(
+                length: provider.getRestaurantMenu.categories.length,
+                vsync: this),
+          ),
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter buildSliverToBoxAdapterHeader(HomeProvider provider) {
+    return SliverToBoxAdapter(
+      child: AspectRatio(
+          aspectRatio: 2 / 1,
+          child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.all(16),
@@ -231,136 +307,84 @@ class _RestaurantMenuDetailState extends State<RestaurantMenuDetail>
                   ],
                 ),
               ),
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
+            ],
+          )),
+    );
+  }
+
+  SliverToBoxAdapter buildSliverGridBody(
+      HomeProvider provider, double width, double height) {
+    return SliverToBoxAdapter(
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8),
+            topRight: Radius.circular(8),
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListView.builder(
+              controller: controller,
+              shrinkWrap: true,
+              // physics: NeverScrollableScrollPhysics(),
+              itemCount: provider.getRestaurantMenu.categories.length,
+              itemBuilder: (BuildContext context, int j) {
+                return AutoScrollTag(
+                    key: ValueKey(j),
+                    controller: controller,
+                    index: j,
                     color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      topRight: Radius.circular(8),
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: SizedBox(
-                          height: 40,
-                          child: TabBar(
-                            indicator: BoxDecoration(
-                              color: const Color.fromRGBO(231, 205, 141, 1),
-                              borderRadius: BorderRadius.circular(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 10),
+                          child: Text(
+                            provider.getRestaurantMenu.categories[j].name,
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
                             ),
-                            dragStartBehavior: DragStartBehavior.start,
-                            indicatorWeight: 0,
-                            unselectedLabelStyle: TextStyle(
-                              color: Colors.grey,
-                            ),
-                            indicatorSize: TabBarIndicatorSize.label,
-                            indicatorColor:
-                                const Color.fromRGBO(122, 98, 39, 1),
-                            labelColor: const Color.fromRGBO(122, 98, 39, 1),
-                            unselectedLabelColor: Colors.grey,
-                            isScrollable: true,
-                            onTap: (val) => _scrollToIndex(val),
-                            tabs: provider.getRestaurantMenu.categories
-                                .map((category) {
-                              return SizedBox(
-                                child: Tab(
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 20),
-                                    child: Text(
-                                      category.name.toString(),
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                            controller: TabController(
-                                length: provider
-                                    .getRestaurantMenu.categories.length,
-                                vsync: this),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          controller: controller,
+                        GridView.builder(
+                          itemCount: provider
+                              .getRestaurantMenu.categories[j].dishes.length,
                           shrinkWrap: true,
-                          // physics: NeverScrollableScrollPhysics(),
-                          itemCount:
-                              provider.getRestaurantMenu.categories.length,
-                          itemBuilder: (BuildContext context, int j) {
-                            return AutoScrollTag(
-                                key: ValueKey(j),
-                                controller: controller,
-                                index: j,
-                                color: Colors.white,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15, vertical: 10),
-                                      child: Text(
-                                        provider.getRestaurantMenu.categories[j]
-                                            .name,
-                                        style: TextStyle(
-                                          color: Colors.black54,
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                    GridView.builder(
-                                      itemCount: provider.getRestaurantMenu
-                                          .categories[j].dishes.length,
-                                      shrinkWrap: true,
-                                      addAutomaticKeepAlives: true,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        childAspectRatio:
-                                            width / (height / 1.4),
-                                      ),
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 10),
-                                          child: MenuFoodCard(
-                                            dish: provider.getRestaurantMenu
-                                                .categories[j].dishes[index],
-                                            isPrice:
-                                                index % 2 == 0 ? true : false,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ));
+                          addAutomaticKeepAlives: true,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: width / (height / 1.4),
+                          ),
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10),
+                              child: MenuFoodCard(
+                                dish: provider.getRestaurantMenu.categories[j]
+                                    .dishes[index],
+                                isPrice: index % 2 == 0 ? true : false,
+                              ),
+                            );
                           },
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      }),
+                      ],
+                    ));
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
